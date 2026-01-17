@@ -12,10 +12,10 @@ export async function POST(request: NextRequest) {
   const validation = createIssueSchema.safeParse(body);
   if (!validation.success)
     return NextResponse.json(
-      validation.error.errors ,
+      validation.error.issues,
       { status: 400 }
     );
-
+  
   const newIssue = await prisma.issue.create({
     data: {
       title: body.title,
