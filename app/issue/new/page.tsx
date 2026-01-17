@@ -9,22 +9,21 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createIssueSchema } from "@/app/validationSchemeas";
-import z from "zod";
+import z, { set } from "zod";
 import ErrorMessage from "@/app/components/ErrorMessage";
+import Spinner from "@/app/components/Spinner";
+
+// ✅ IMPORTANT Type
+type IssueForm = z.infer<typeof createIssueSchema>;
 
 // ✅ IMPORTANT FIX
 const SimpleMdeReact = dynamic(() => import("react-simplemde-editor"), {
   ssr: false,
 });
 
-// interface Issueform {
-//   title: string;
-//   description: string;
-// }
-type IssueForm = z.infer<typeof createIssueSchema>;
-
 const NewIssuepage = () => {
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [error, setError] = useState("");
 
@@ -39,10 +38,11 @@ const NewIssuepage = () => {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
+      setIsSubmitting(true);
       await axios.post("/api/issues", data);
       router.push("/issue");
     } catch (error) {
-      console.log(error);
+      setIsSubmitting(false);
       setError("Failed to create issue. Please try again.");
     }
   });
@@ -72,7 +72,10 @@ const NewIssuepage = () => {
           )}
         />
 
-        <Button>Submit Issue</Button>
+        <Button disabled={isSubmitting} type="submit" >
+          Submit Issue
+          {isSubmitting && <Spinner />}
+        </Button>
       </form>
     </div>
   );
