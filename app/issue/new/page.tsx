@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createIssueSchema } from "@/app/validationSchemeas";
 import z from "zod";
+import ErrorMessage from "@/app/components/ErrorMessage";
 
 // ✅ IMPORTANT FIX
 const SimpleMdeReact = dynamic(() => import("react-simplemde-editor"), {
@@ -24,10 +25,15 @@ type IssueForm = z.infer<typeof createIssueSchema>;
 
 const NewIssuepage = () => {
   const router = useRouter();
-   
+
   const [error, setError] = useState("");
 
-  const { register, handleSubmit, control, formState:{errors}} = useForm<IssueForm>({
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<IssueForm>({
     resolver: zodResolver(createIssueSchema),
   });
 
@@ -50,10 +56,11 @@ const NewIssuepage = () => {
       )}
 
       <form onSubmit={onSubmit} className=" space-y-4 ">
+        <ErrorMessage>{errors.title?.message}</ErrorMessage>
         <TextField.Root placeholder="New Issue Title" {...register("title")} />
-{ errors.title && (
-        <Text color="red" as="div">{errors.title.message}</Text>
- )}
+
+        <ErrorMessage>{errors.description?.message}</ErrorMessage>
+
         <Controller
           name="description"
           control={control}
@@ -64,11 +71,6 @@ const NewIssuepage = () => {
             />
           )}
         />
-        {
-          errors.description && (
-            <Text as="div" color="red">{errors.description.message}</Text>
-          )
-        }
 
         <Button>Submit Issue</Button>
       </form>
