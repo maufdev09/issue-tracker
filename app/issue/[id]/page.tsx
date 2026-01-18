@@ -2,8 +2,8 @@ import IssueStatusBadge from "@/app/components/IssueStatusBadge";
 import prisma from "@/prisma/client";
 import { Card, Flex, Heading, Text } from "@radix-ui/themes";
 import { notFound } from "next/navigation";
-import React from "react";
-import { is } from "zod/locales";
+import ReactMarkdown from 'react-markdown'
+
 
 interface IssueDetailPageProps {
   params: { id: string };
@@ -27,9 +27,9 @@ const IssueDetailPage = async ({ params }: IssueDetailPageProps) => {
         <IssueStatusBadge status={issue.status} />
         <Text size={"2"} >{issue.createdAt.toLocaleDateString()} </Text>
       </Flex>
-      <Card  mt="2">
+      <Card   className="prose dark:prose-invert max-w-none" mt="4">
 
-      <p>{issue.description}</p>
+      <ReactMarkdown>{issue.description}</ReactMarkdown>
       </Card>
      
     </div>
