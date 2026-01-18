@@ -27,7 +27,7 @@ const IssueDetailPage = async ({ params }: IssueDetailPageProps) => {
         <IssueStatusBadge status={issue.status} />
         <Text size={"2"} >{issue.createdAt.toLocaleDateString()} </Text>
       </Flex>
-      <Card   className="prose dark:prose-invert max-w-none" mt="4">
+      <Card   className="prose dark:prose-invert max-w-none" mt="4  ">
 
       <ReactMarkdown>{issue.description}</ReactMarkdown>
       </Card>
