@@ -2,7 +2,7 @@
 
 import { ErrorMessage, Spinner } from "@/app/components";
 import { Issue } from "@/app/generated/prisma/client";
-import { createIssueSchema } from "@/app/validationSchemeas";
+import { IssueSchema } from "@/app/validationSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Callout, TextField } from "@radix-ui/themes";
 import axios from "axios";
@@ -14,7 +14,7 @@ import { Controller, useForm } from "react-hook-form";
 import z from "zod";
 
 // ✅ IMPORTANT Type
-type IssueFormData = z.infer<typeof createIssueSchema>;
+type IssueFormData = z.infer<typeof IssueSchema>;
 
 // ✅ IMPORTANT FIX
 const SimpleMdeReact = dynamic(() => import("react-simplemde-editor"), {
@@ -35,13 +35,18 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
     control,
     formState: { errors },
   } = useForm<IssueFormData>({
-    resolver: zodResolver(createIssueSchema),
+    resolver: zodResolver(IssueSchema),
   });
 
   const onSubmit = handleSubmit(async (data) => {
     try {
       setIsSubmitting(true);
-      await axios.post("/api/issues", data);
+      if (issue) {
+        await axios.patch(`/api/issues/${issue.id}`, data);
+      }
+      else {
+        await axios.post("/api/issues", data);
+      }
       router.push("/issue");
     } catch (error) {
       setIsSubmitting(false);
@@ -67,7 +72,7 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
           name="description"
           control={control}
           defaultValue={issue?.description || ""}
-          render={({ field }) => (
+          render={({ field }) => ( 
             <SimpleMdeReact
               placeholder="Describe the issue in detail"
               {...field}
@@ -76,12 +81,12 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
         />
 
         <Button disabled={isSubmitting} type="submit" >
-          Submit Issue
+          {issue ? 'Update Issue' : 'Submit Issue'}{' '}
           {isSubmitting && <Spinner />}
         </Button>
       </form>
     </div>
-  );
+  ); 
 };
 
 export default IssueForm;
