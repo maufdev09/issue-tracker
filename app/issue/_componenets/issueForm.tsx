@@ -6,22 +6,21 @@ import { IssueSchema } from "@/app/validationSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Callout, TextField } from "@radix-ui/themes";
 import axios from "axios";
-import "easymde/dist/easymde.min.css";
 import dynamic from "next/dynamic";
+import "easymde/dist/easymde.min.css";
 import { useRouter } from "next/navigation";
+import SimpleMdeReact from'react-simplemde-editor'
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import z from "zod";
 
+
 // ✅ IMPORTANT Type
 type IssueFormData = z.infer<typeof IssueSchema>;
 
-// ✅ IMPORTANT FIX
-const SimpleMdeReact = dynamic(() => import("react-simplemde-editor"), {
-  ssr: false,
-});
+// const SimpleMdeReact = dynamic(() => import('react-simplemde-editor'), { ssr: false });
 
-
+ 
 
 const IssueForm = ({ issue }: { issue?: Issue }) => {
   const router = useRouter();

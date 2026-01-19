@@ -1,15 +1,18 @@
-import React from 'react'
-import IssueForm from '../../_componenets/issueForm'
-import prisma from '@/prisma/client';
-import { notFound } from 'next/navigation';
+import prisma from "@/prisma/client";
+import dynamic from "next/dynamic";
+import { notFound } from "next/navigation";
+import IssueFormSkeleton from "./loading";
 
-
-interface EditIssuePageProps{
-params:{id:string}
+interface EditIssuePageProps {
+  params: { id: string };
 }
 
-const EditIssuePage = async({params}:EditIssuePageProps) => {
-     const { id } = await params;
+const IssueForm = dynamic(() => import("../../_componenets/issueForm"), {
+  loading: () => <IssueFormSkeleton />,
+});
+
+const EditIssuePage = async ({ params }: EditIssuePageProps) => {
+  const { id } = await params;
   const issueNumber = parseInt(id);
 
   const issue = await prisma.issue.findUnique({
@@ -22,7 +25,7 @@ const EditIssuePage = async({params}:EditIssuePageProps) => {
     <div>
       <IssueForm issue={issue} />
     </div>
-  )
-}
+  );
+};
 
-export default EditIssuePage
+export default EditIssuePage;
