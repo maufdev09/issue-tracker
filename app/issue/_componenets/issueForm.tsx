@@ -48,6 +48,7 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
         await axios.post("/api/issues", data);
       }
       router.push("/issue");
+      router.refresh();
     } catch (error) {
       setIsSubmitting(false);
       setError("Failed to create issue. Please try again.");
@@ -55,7 +56,7 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
   });
 
   return (
-    <div className="max-w-xl mx-auto p-4 space-y-4">
+    <div className=" p-4 space-y-4">
       {error && (
         <Callout.Root color="red">
           <Callout.Text>{error}</Callout.Text>
