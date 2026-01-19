@@ -2,49 +2,49 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/prisma/client";
 import { IssueSchema } from "@/app/validationSchemas";
 
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: { id: string } },
+) {
+  const { id } = await params;
+  const body = await request.json();
 
+  const validation = IssueSchema.safeParse(body);
+  if (!validation.success)
+    return NextResponse.json(validation.error.issues, { status: 400 });
 
-export async function PATCH(request:NextRequest,{params}:{params:{id:string}}){
-    const { id } = await params;
-    const body = await request.json();
+  const issue = await prisma.issue.findUnique({
+    where: { id: parseInt(id) },
+  });
 
-    const validation = IssueSchema.safeParse(body);
-    if (!validation.success)
-        return NextResponse.json(
-            validation.error.issues,
-            { status: 400 }
-        );
+  if (!issue)
+    return NextResponse.json({ error: "Issue not found" }, { status: 404 });
 
-    const issue = await prisma.issue.findUnique({
-        where: { id: parseInt(id) }
-    });
+  const updatedIssue = await prisma.issue.update({
+    where: { id: parseInt(id) },
+    data: {
+      title: body.title,
+      description: body.description,
+    },
+  });
 
-    if (!issue)
-        return NextResponse.json({ error: 'Issue not found' }, { status: 404 });
-
-    const updatedIssue = await prisma.issue.update({
-        where: { id: parseInt(id) },
-        data: {
-            title: body.title,
-            description: body.description,
-        },
-    });
-
-    return NextResponse.json(updatedIssue);
+  return NextResponse.json(updatedIssue);
 }
 
-export async function DELETE(request:NextRequest,{params}:{params:{id:string}}){
-    const { id } =  params;
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } },
+) {
+  const { id } = await params;
 
-    const issue = await prisma.issue.findUnique({
-        where: { id: parseInt(id) }
-    });
-    if (!issue)
-        return NextResponse.json({ error: 'Issue not found' }, { status: 404 });
-    await prisma.issue.delete({
-        where: { id: parseInt(id) }
-    });
+  const issue = await prisma.issue.findUnique({
+    where: { id: parseInt(id) },
+  });
+  if (!issue)
+    return NextResponse.json({ error: "Issue not found" }, { status: 404 });
+  await prisma.issue.delete({
+    where: { id: parseInt(id) },
+  });
 
-    return NextResponse.json({ message: 'Issue deleted successfully' });
-
+  return NextResponse.json({ message: "Issue deleted successfully" });
 }
