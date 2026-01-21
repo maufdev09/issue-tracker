@@ -13,7 +13,7 @@ import {
   Text,
 } from "@radix-ui/themes";
 import { DrawingPinIcon } from "@radix-ui/react-icons";
-import Skeleton from '@/app/components/Skeleton'
+import Skeleton from "@/app/components/Skeleton";
 
 const Navbar = () => {
   return (
@@ -32,8 +32,6 @@ const Navbar = () => {
     </nav>
   );
 };
-
-
 
 const NavbarLink = () => {
   const currentPath = usePathname();
@@ -59,9 +57,8 @@ const NavbarLink = () => {
         return (
           <li
             className={classnames("cursor-pointer", {
-             "nav-link": true,
-             "!text-zinc-900": currentPath === link.href,
-            
+              "nav-link": true,
+              "!text-zinc-900": currentPath === link.href,
             })}
             key={link.href}
           >
@@ -77,7 +74,7 @@ const AuthStatus = () => {
   const { status, data: session } = useSession();
 
   if (status === "loading") return <Skeleton width={"3rem"} />;
- 
+
   return (
     <Box>
       {status === "authenticated" && (
@@ -96,15 +93,17 @@ const AuthStatus = () => {
             <DropdownMenu.Label>
               <Text size="2">{session.user?.email}</Text>
             </DropdownMenu.Label>
-            <DropdownMenu.Item>
+            <DropdownMenu.Item asChild>
               <Link href="/api/auth/signout">Logout</Link>
             </DropdownMenu.Item>
           </DropdownMenu.Content>
         </DropdownMenu.Root>
       )}
       {status === "unauthenticated" && (
-        <Link className="nav-link" href="/api/auth/signin">Login</Link>
-      )} 
+        <Link className="nav-link" href="/api/auth/signin">
+          Login
+        </Link>
+      )}
     </Box>
   );
 };

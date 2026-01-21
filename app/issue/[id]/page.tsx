@@ -4,12 +4,16 @@ import { notFound } from "next/navigation";
 import EditIssueButton from "./EditIssueButton";
 import IssueDetail from "./IssueDetail";
 import DeleteIssueButton from "./DeleteIssueButton";
+import { auth } from "@/auth";
 
 interface IssueDetailPageProps {
   params: { id: string };
 }
 
 const IssueDetailPage = async ({ params }: IssueDetailPageProps) => {
+
+  const session= await auth();
+
   const { id } = await params;
   const issueNumber = parseInt(id);
 
@@ -26,11 +30,13 @@ const IssueDetailPage = async ({ params }: IssueDetailPageProps) => {
       </Box>
 
       <Box>
-        <Flex direction={"column"} gap="4" justify="start" mb="4">
+        {
+          session && <Flex direction={"column"} gap="4" justify="start" mb="4">
 
         <EditIssueButton issueId={issue.id} />
         <DeleteIssueButton issueId={issue.id} />
         </Flex>
+        }
       </Box>
     </Grid>
   );
