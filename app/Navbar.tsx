@@ -13,6 +13,7 @@ import {
   Text,
 } from "@radix-ui/themes";
 import { DrawingPinIcon } from "@radix-ui/react-icons";
+import Skeleton from '@/app/components/Skeleton'
 
 const Navbar = () => {
   return (
@@ -75,8 +76,8 @@ const NavbarLink = () => {
 const AuthStatus = () => {
   const { status, data: session } = useSession();
 
-  if (status === "loading") return null;
-
+  if (status === "loading") return <Skeleton width={"3rem"} />;
+ 
   return (
     <Box>
       {status === "authenticated" && (
