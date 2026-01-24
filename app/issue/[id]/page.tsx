@@ -5,14 +5,14 @@ import EditIssueButton from "./EditIssueButton";
 import IssueDetail from "./IssueDetail";
 import DeleteIssueButton from "./DeleteIssueButton";
 import { auth } from "@/auth";
+import AssignSelect from "./AssignSelect";
 
 interface IssueDetailPageProps {
   params: { id: string };
 }
 
 const IssueDetailPage = async ({ params }: IssueDetailPageProps) => {
-
-  const session= await auth();
+  const session = await auth();
 
   const { id } = await params;
   const issueNumber = parseInt(id);
@@ -21,22 +21,22 @@ const IssueDetailPage = async ({ params }: IssueDetailPageProps) => {
     where: { id: issueNumber },
   });
 
-  if (!issue) notFound(); 
+  if (!issue) notFound();
 
   return (
     <Grid columns={{ initial: "1", sm: "5" }} gap="8">
       <Box className="md:col-span-4">
-        <IssueDetail  issue={issue} />
+        <IssueDetail issue={issue} />
       </Box>
 
       <Box>
-        {
-          session && <Flex direction={"column"} gap="4" justify="start" mb="4">
-
-        <EditIssueButton issueId={issue.id} />
-        <DeleteIssueButton issueId={issue.id} />
-        </Flex>
-        }
+        {session && (
+          <Flex direction={"column"} gap="4" justify="start" mb="4">
+            <AssignSelect />
+            <EditIssueButton issueId={issue.id} />
+            <DeleteIssueButton issueId={issue.id} />
+          </Flex>
+        )}
       </Box>
     </Grid>
   );
