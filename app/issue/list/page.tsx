@@ -4,6 +4,7 @@ import IssueAction from "./IssueAction";
 import { IssueStatusBadge, Link } from "@/app/components";
 import { Status } from "@/app/generated/prisma/enums";
 import NextLink from "next/link";
+import Pagination from "@/app/components/Pagination";
 
 /* -------------------------------------------------------------------------- */
 /*                                CONFIG                                      */
@@ -19,9 +20,10 @@ const VALID_STATUS = Object.values(Status);
 /* -------------------------------------------------------------------------- */
 
 interface IssuePageProps {
-  params?: {
+  searchParams?: {
     status?: string;
     orderBy?: string;
+    page?: string; 
   };
 }
 
@@ -29,11 +31,13 @@ const Issuepage = async ({ searchParams }: IssuePageProps) => {
   /* -------------------------- VALIDATION LOGIC --------------------------- */
 
 
-  const params = await searchParams;
+  const params = await searchParams; 
   const status =
     params?.status && VALID_STATUS.includes(params.status as Status)
       ? (params.status as Status)
       : undefined;
+
+      const where  ={status}
 
   const orderBy: OrderBy = VALID_ORDER_BY.includes(
     params?.orderBy as OrderBy
@@ -41,12 +45,23 @@ const Issuepage = async ({ searchParams }: IssuePageProps) => {
     ? (params?.orderBy as OrderBy)
     : "createdAt";
 
+
+  const page = parseInt(params?.page || "1");
+  const pageSize = 10;
+  const skip = (page - 1) * pageSize;
+
+
+
   /* ----------------------------- DB QUERY -------------------------------- */
 
   const issues = await prisma.issue.findMany({
-    where: { status },
+    where,
     orderBy: { [orderBy]: "desc" },
+    skip,
+    take: pageSize,
   });
+
+  const totalCount = await prisma.issue.count({ where });
 
   /* ------------------------------ UI ------------------------------------- */
 
@@ -115,6 +130,7 @@ const Issuepage = async ({ searchParams }: IssuePageProps) => {
           ))}
         </Table.Body>
       </Table.Root>
+      <Pagination itemCount={totalCount} pageSize={pageSize} currentPage={page} /> 
     </div>
   );
 };
