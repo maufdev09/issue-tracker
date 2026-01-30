@@ -5,6 +5,7 @@ import { IssueStatusBadge, Link } from "@/app/components";
 import { Status } from "@/app/generated/prisma/enums";
 import NextLink from "next/link";
 import Pagination from "@/app/components/Pagination";
+import { Metadata } from "next";
 
 /* -------------------------------------------------------------------------- */
 /*                                CONFIG                                      */
@@ -137,3 +138,8 @@ const Issuepage = async ({ searchParams }: IssuePageProps) => {
 
 export const dynamic = "force-dynamic";
 export default Issuepage;
+
+export const  metadata:Metadata= {
+  title: 'Issue Tracker -Issue List',
+  description:'View all project issues'
+} ;
