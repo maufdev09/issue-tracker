@@ -18,7 +18,6 @@ import z from "zod";
 // ✅ IMPORTANT Type
 type IssueFormData = z.infer<typeof IssueSchema>;
 
-// const SimpleMdeReact = dynamic(() => import('react-simplemde-editor'), { ssr: false });
 
  
 

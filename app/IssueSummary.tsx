@@ -1,6 +1,5 @@
 import { Card, Flex, Text } from "@radix-ui/themes";
-import { Value } from "@radix-ui/themes/components/data-list";
-import React from "react";
+
 import { Status } from "./generated/prisma/enums";
 import { Link } from "./components";
 interface IssueSummaryProps {
@@ -20,15 +19,14 @@ const IssueSummary = ({ open, inProgress, closed }: IssueSummaryProps) => {
   ];
 
   return (
-    <Flex  gap="4">
+    <Flex gap="4">
       {statuses.map((item) => (
         <Card key={item.label}>
-          <Flex direction="column" gap="2" align="center" justify="center"]>
-            <Link
-            href={`/issue/list?status=${item.status}`}>{item.label}</Link>
-         <Text size="5" weight="bold">
-            {item.value > 0 && item.value}
-         </Text>
+          <Flex direction="column" gap="2" align="center" justify="center">
+            <Link href={`/issue/list?status=${item.status}`}>{item.label}</Link>
+            <Text size="5" weight="bold">
+              {item.value > 0 && item.value}
+            </Text>
           </Flex>
         </Card>
       ))}
