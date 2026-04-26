@@ -5,33 +5,35 @@ import { auth } from "@/auth";
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  context: { params: Promise<{ id: string }> }
 ) {
+  const session = await auth();
+  if (!session) {
+    return NextResponse.json({}, { status: 401 });
+  }
 
-  const session= await auth();
-if (!session) {
-  return NextResponse.json({}, { status: 401 });
-}
-  
-  const { id } = await params;
+  const { id } = await context.params; // ✅ FIXED
+
   const body = await request.json();
-  
+
   const validation = patchIssueSchema.safeParse(body);
   if (!validation.success)
     return NextResponse.json(validation.error.issues, { status: 400 });
 
-const { assignedToUserId,title,description,status } = body;
-if (assignedToUserId) {
+  const { assignedToUserId, title, description, status } = body;
+
+  if (assignedToUserId) {
     const user = await prisma.user.findUnique({
-      where: { id:assignedToUserId },
+      where: { id: assignedToUserId },
     });
 
     if (!user) {
-      return NextResponse.json({ error: "Assignee user not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Assignee user not found" },
+        { status: 404 }
+      );
     }
-  
-}
-
+  }
 
   const issue = await prisma.issue.findUnique({
     where: { id: parseInt(id) },
@@ -55,20 +57,22 @@ if (assignedToUserId) {
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  context: { params: Promise<{ id: string }> }
 ) {
+  const session = await auth();
+  if (!session) {
+    return NextResponse.json({}, { status: 401 });
+  }
 
-   const session= await auth();
-if (!session) {
-  return NextResponse.json({}, { status: 401 });
-}
-  const { id } = await params;
+  const { id } = await context.params; // ✅ FIXED
 
   const issue = await prisma.issue.findUnique({
     where: { id: parseInt(id) },
   });
+
   if (!issue)
     return NextResponse.json({ error: "Issue not found" }, { status: 404 });
+
   await prisma.issue.delete({
     where: { id: parseInt(id) },
   });
